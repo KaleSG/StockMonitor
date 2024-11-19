@@ -1,3 +1,4 @@
-venv/
+venv/*
 data.json
 stocks.csv
+__pycache__/*
