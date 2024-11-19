@@ -1,5 +1,5 @@
 from selenium import webdriver
-import locale, re, requests,json
+import locale, requests, json, time
 
 # Initialization Options
 options = webdriver.FirefoxOptions()
@@ -11,23 +11,23 @@ headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 
 
 
-symbolList = [ "NVDA","AVGO", "COST", "AMZN", "JPM", "AXP", "AXON"]
+symbolList = ["NVDA","AVGO", "COST", "AMZN", "JPM", "AXP", "AXON"]
 symbolStats = []
 
-
+start_time = time.time()
 for symbol in symbolList:
     stock = {}
     
     #  PortfolioLab  Return Rate Aggregate
-    # driver.get("https://portfolioslab.com/symbol/" + symbol)
+    driver.get("https://portfolioslab.com/symbol/" + symbol)
      
     stock["Symbol"] = symbol.upper()
-    # stock["YTD"] = locale.atof(re.sub('%','',driver.find_element("xpath","/html/body/div/div/div[2]/main/section[4]/div[2]/div/div[1]/div/div[1]/p").text))/100
-    # stock["1MonthReturn"] = locale.atof(re.sub('%','',driver.find_element("xpath","/html/body/div/div/div[2]/main/section[4]/div[2]/div/div[1]/div/div[2]/p").text))/100   
-    # stock["6MonthReturn"] = locale.atof(re.sub('%','',driver.find_element("xpath","/html/body/div/div/div[2]/main/section[4]/div[2]/div/div[1]/div/div[3]/p").text))/100   
-    # stock["1YearReturn"] = locale.atof(re.sub('%','',driver.find_element("xpath","/html/body/div/div/div[2]/main/section[4]/div[2]/div/div[1]/div/div[4]/p").text))/100   
-    # stock["5YearReturn"] = locale.atof(re.sub('%','',driver.find_element("xpath","/html/body/div/div/div[2]/main/section[4]/div[2]/div/div[1]/div/div[5]/p").text))/100   
-    # stock["10YearReturn"] = locale.atof(re.sub('%','',driver.find_element("xpath","/html/body/div/div/div[2]/main/section[4]/div[2]/div/div[1]/div/div[6]/p").text))/100   
+    stock["YTD"] = '%.3f'%(locale.atof(driver.find_element("xpath","/html/body/div/div/div[2]/main/section[4]/div[2]/div/div[1]/div/div[1]/p").text.replace("%", ''))/100)
+    stock["1MonthReturn"] = '%.3f'%(locale.atof(driver.find_element("xpath","/html/body/div/div/div[2]/main/section[4]/div[2]/div/div[1]/div/div[2]/p").text.replace("%", ''))/100)
+    stock["6MonthReturn"] = '%.3f'%(locale.atof(driver.find_element("xpath","/html/body/div/div/div[2]/main/section[4]/div[2]/div/div[1]/div/div[3]/p").text.replace("%", ''))/100)
+    stock["1YearReturn"] = '%.3f'%(locale.atof(driver.find_element("xpath","/html/body/div/div/div[2]/main/section[4]/div[2]/div/div[1]/div/div[4]/p").text.replace("%", ''))/100)
+    stock["5YearReturn"] = '%.3f'%(locale.atof(driver.find_element("xpath","/html/body/div/div/div[2]/main/section[4]/div[2]/div/div[1]/div/div[5]/p").text.replace("%", ''))/100)
+    stock["10YearReturn"] = '%.3f'%(locale.atof(driver.find_element("xpath","/html/body/div/div/div[2]/main/section[4]/div[2]/div/div[1]/div/div[6]/p").text.replace("%", ''))/100)
            
     # Nasdaq response
     
@@ -52,7 +52,11 @@ for symbol in symbolList:
     
     
     symbolStats.append(stock)
-    
-
-print(symbolStats)    
+      
 driver.quit()
+
+end_time = time.time()
+print(str(end_time-start_time) + "s")
+
+with open("data.json", "w") as file:
+    json.dump(symbolStats, file)
