@@ -1,5 +1,5 @@
 from selenium import webdriver
-import locale, requests, json, time, JsonToCSV
+import locale, requests, json, time, csvconversion
 start_time = time.time()
 
 
@@ -83,4 +83,4 @@ with open("data.json", "w") as file:
     json.dump(symbolStats, file)
     
     
-JsonToCSV.__main__()
+csvconversion.__main__()
